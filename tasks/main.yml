@@ -1,0 +1,58 @@
+---
+- name: Create dest directory
+  ansible.builtin.file:
+    name: "{{ t4d_homedir }}/src"
+    state: directory
+    owner: "{{ t4d_user }}"
+    group: "{{ t4d_group }}"
+
+- name: Install Tools4Dev
+  ansible.builtin.unarchive:
+    src: "{{ t4d_download_url }}"
+    dest: "{{ t4d_homedir }}/src"
+    remote_src: yes
+    extra_opts: "--strip-components=1"
+
+- name: Create bindir
+  ansible.builtin.file:
+    name: "{{ t4d_bindir }}"
+    state: directory
+    owner: "{{ t4d_user }}"
+    group: "{{ t4d_group }}"
+
+- name: Soft link t4d bin
+  ansible.builtin.file:
+    src: "{{ t4d_homedir }}/src/t4d"
+    dest: "{{ t4d_bindir }}/t4d"
+    state: link
+
+- name: Update shell RC with tools4dev path
+  ansible.builtin.blockinfile:
+    path: "{{ t4d_shellrc }}"
+    append_newline: true
+    block: |
+      ## Tools4Dev
+      export T4D_ROOT_PATH="{{  t4d_homedir }}"
+      export T4D_TEAM_ROOT="{{ t4d_team_dest }}"
+      if [[ -e $T4D_ROOT_PATH ]]; then
+         T4D_NATIVE="{{ 'true' if t4d_autoload else 'false'}}"
+         #Copy and paste this line at the beginning of any function to remove auto-ls feature
+         #local CHPWD=1
+         function t4d-init() { source $T4D_ROOT_PATH/init }
+         if [[ "$T4D_NATIVE" == "true" ]]; then
+            t4d-init
+         else
+            export PATH="$PATH:$T4D_ROOT_PATH/bin"
+         fi
+      fi
+
+- name: Deploy t4d init file
+  ansible.builtin.template:
+    src: t4d-init.j2
+    dest: "{{ t4d_homedir }}/init"
+    owner: "{{ t4d_user }}"
+    group: "{{ t4d_group }}"
+
+
+- include_tasks: team-install.yml
+  when: t4d_team_enabled

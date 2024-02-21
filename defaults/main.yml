@@ -1,0 +1,17 @@
+---
+t4d_autoload: true
+t4d_user: "{{ ansible_remote_user }}"
+t4d_group: t4d
+
+t4d_version: 5.0.0
+t4d_download_url: "https://github.com/iFeelSmart/Tools4Dev/archive/refs/tags/{{ t4d_version }}.tar.gz"
+
+t4d_homedir: ~/.tools4dev
+t4d_bindir: "{{ t4d_homedir }}/bin"
+t4d_shellrc: ~/.zshrc
+
+t4d_team_enabled: false
+t4d_team_src: ""
+t4d_team_dest: "{{ t4d_homedir }}/team"
+t4d_team_name: Default
+t4d_team_version: main

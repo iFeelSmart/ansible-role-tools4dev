@@ -1,0 +1,21 @@
+---
+- name: Create team directory
+  ansible.builtin.file:
+    name: "{{ t4d_homedir }}/team"
+    state: directory
+    owner: "{{ t4d_user }}"
+    group: "{{ t4d_group }}"
+
+- name: Install Team config
+  ansible.builtin.git:
+    repo: "{{ t4d_team_src }}"
+    dest: "{{ t4d_team_dest }}"
+    accept_hostkey: yes
+    single_branch: yes
+    version: "{{ t4d_team_version }}"
+
+- name: Create sof link for manifest
+  ansible.builtin.file:
+    src: "{{ t4d_team_dest }}/t4d-manifest.xml"
+    dest: "{{ t4d_homedir }}/src/manifest.xml"
+    state: link

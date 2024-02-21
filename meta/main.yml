@@ -1,0 +1,33 @@
+galaxy_info:
+  author: iFeelSmart
+  description: Ansible role to install and set up tools4dev
+  company: iFeelSmart
+
+  license: MIT
+
+  min_ansible_version: 2.1
+
+  platforms:
+  - name: EL
+    versions:
+      - 7
+      - 8
+  - name: Fedora
+    versions:
+      - 34
+      - 35
+      - 36
+      - 37
+      - 38
+      - 39
+  - name: macOS
+    versions:
+      - all
+
+  galaxy_tags:
+    - development
+    - system
+    - buildsystem
+    - macos
+
+dependencies: []
